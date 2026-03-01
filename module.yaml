@@ -1,0 +1,46 @@
+name: module-maker
+version: 0.1.0
+description: Autonomously develops megamind modules from GitHub issues
+
+tags: [development, automation, meta]
+
+parameters:
+  - key: github_repo
+    label: GitHub Repository
+    type: text
+    required: true
+    default: "1ping0nly/megamind-modules"
+    description: GitHub org/repo to watch for module request issues
+
+agent:
+  systemPrompt: prompts/system.md
+  model: claude-sonnet-4-20250514
+  maxTurns: 50
+  maxCostUsd: 2.00
+  mcpServers: [memory]
+  allowedTools:
+    - Bash
+    - Read
+    - Write
+    - Edit
+
+  session:
+    persistence: true
+    maxHistory: 20
+
+skills:
+  - name: check-issues
+    description: Poll for new GitHub issues and start development sessions
+    prompt: prompts/skills/check-issues.md
+    triggers:
+      - type: cron
+        expression: "*/10 * * * *"
+      - type: manual
+
+  - name: respond-to-review
+    description: Address PR review comments on open module PRs
+    prompt: prompts/skills/respond-to-review.md
+    triggers:
+      - type: cron
+        expression: "*/10 * * * *"
+      - type: manual
