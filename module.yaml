@@ -44,3 +44,13 @@ skills:
       - type: cron
         expression: "*/10 * * * *"
       - type: manual
+
+capabilities:
+  - skill: check-issues
+    visibility: tenant
+    inputSchema:
+      type: object
+      properties:
+        request:
+          type: string
+          description: "Module development request or GitHub issue to work on"
